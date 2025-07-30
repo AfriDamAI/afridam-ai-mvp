@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AfriDam AI - Live Demo</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts: Inter and Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles & Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-charcoal': '#1C1A19',
+                        'brand-sand': '#F7F3EE',
+                        'brand-terracotta': '#E1784F',
+                        'brand-turquoise': '#4DB6AC',
+                        'brand-text-dark': '#1C1A19',
+                        'brand-text-light': '#D4D2D0',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #1C1A19;
+            color: #D4D2D0;
+        }
+        .gradient-text {
+            background: -webkit-linear-gradient(45deg, #E1784F, #F0A287);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .cta-glow:hover {
+            box-shadow: 0 0 25px 0 rgba(225, 120, 79, 0.5);
+        }
+        .hidden {
+            display: none;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            color: #E1784F;
+            border-bottom-color: #E1784F;
+        }
+    </style>
+</head>
+<body class="font-inter antialiased">
+
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+
+        <!-- Logo Header -->
+        <header class="absolute top-0 left-0 right-0 p-8">
+            <div class="flex justify-center">
+                <svg width="140" height="32" viewBox="0 0 140 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <text fill="#F7F3EE" font-family="Poppins, sans-serif" font-size="24" font-weight="800" letter-spacing="0.02em">
+                        <tspan x="0" y="24">A</tspan>
+                        <tspan x="18" y="24">friDam</tspan>
+                    </text>
+                    <rect x="5.5" y="15.5" width="8" height="3" fill="#E1784F"/>
+                    <text fill="#4DB6AC" font-family="Poppins, sans-serif" font-size="24" font-weight="800" letter-spacing="0.02em" x="98" y="24">AI</text>
+                </svg>
+            </div>
+        </header>
+
+        <!-- Main Container -->
+        <div class="w-full max-w-lg mx-auto text-center bg-brand-dark-blue/50 p-8 rounded-3xl border border-white/10">
+
+            <!-- Tab Navigation -->
+            <div class="flex border-b border-white/10 mb-8">
+                <button id="tab-scanner" class="tab-button active w-1/2 pb-3 font-bold border-b-2 border-transparent">AI Skin Scanner</button>
+                <button id="tab-ingredients" class="tab-button w-1/2 pb-3 font-bold border-b-2 border-transparent">Ingredient Checker</button>
+            </div>
+
+            <!-- Skin Scanner Content -->
+            <div id="scanner-content">
+                 <!-- Step 1: Upload Screen -->
+                <div id="upload-screen">
+                    <div id="image-preview-container" class="mb-4 hidden">
+                        <img id="image-preview" src="" alt="Image preview" class="max-w-xs max-h-48 mx-auto rounded-xl shadow-lg"/>
+                    </div>
+                    <h1 class="text-3xl font-extrabold font-poppins text-brand-sand">Live AI Skin Analysis</h1>
+                    <p class="mt-2 text-md text-brand-text-light">Upload a clear photo of a skin condition to begin.</p>
+                    <div class="mt-6">
+                        <input type="file" id="image-upload-input" class="hidden" accept="image/*"/>
+                        <label for="image-upload-input" id="upload-label" class="bg-brand-terracotta text-white font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition duration-300 cta-glow inline-block cursor-pointer">
+                            Select Image
+                        </label>
+                        <button id="analyze-button" class="hidden bg-brand-turquoise text-white font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition duration-300 cta-glow">
+                            Analyze Skin
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Analyzing Screen -->
+                <div id="analyzing-screen" class="hidden">
+                    <div class="relative flex justify-center items-center w-32 h-32 mx-auto">
+                        <div class="absolute inset-0 bg-brand-terracotta/20 rounded-full animate-pulse-slow"></div>
+                        <div class="absolute inset-4 bg-brand-terracotta/20 rounded-full animate-pulse-slow" style="animation-delay: 1s;"></div>
+                        <svg class="w-16 h-16 text-brand-terracotta z-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                    <h2 class="mt-6 text-2xl font-bold font-poppins text-brand-sand">Analyzing Your Skin...</h2>
+                </div>
+
+                <!-- Step 3: Results Screen -->
+                <div id="results-screen" class="hidden">
+                    <h2 class="text-3xl font-extrabold font-poppins text-brand-sand">Analysis Complete</h2>
+                    <div class="mt-6 bg-brand-charcoal border border-white/10 rounded-2xl p-6 text-left">
+                        <p class="text-sm font-bold text-brand-turquoise uppercase tracking-wider">Primary Condition Detected</p>
+                        <h3 id="diagnosis-condition" class="text-2xl font-bold text-brand-sand mt-1"></h3>
+                        <div class="mt-3 inline-block bg-brand-terracotta/10 text-brand-terracotta font-bold text-xs px-3 py-1 rounded-full">
+                            Confidence Score: <span id="diagnosis-confidence"></span>%
+                        </div>
+                        <p id="diagnosis-description" class="mt-4 text-brand-text-light"></p>
+                    </div>
+                    <div class="mt-6">
+                         <button onclick="resetDemo('scanner')" class="bg-brand-sand/10 text-brand-sand font-bold py-2 px-6 rounded-full hover:bg-brand-sand/20 transition duration-300">
+                            Analyze Another Image
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ingredient Checker Content -->
+            <div id="ingredients-content" class="hidden">
+                <h1 class="text-3xl font-extrabold font-poppins text-brand-sand">Harmful Ingredient Checker</h1>
+                <p class="mt-2 text-md text-brand-text-light">Paste a product's ingredient list below, separated by commas.</p>
+                
+                <div id="ingredients-input-screen">
+                    <textarea id="ingredients-textarea" rows="6" class="mt-6 w-full bg-brand-charcoal border border-white/10 rounded-md p-4 text-brand-sand focus:outline-none focus:ring-2 focus:ring-brand-terracotta" placeholder="e.g. aqua, glycerin, hydroquinone, parabens..."></textarea>
+                    <div class="mt-6">
+                        <button id="check-ingredients-button" class="bg-brand-terracotta text-white font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition duration-300 cta-glow">
+                            Check Ingredients
+                        </button>
+                    </div>
+                </div>
+
+                <div id="ingredients-results-screen" class="hidden text-left">
+                     <h2 class="text-2xl font-extrabold font-poppins text-brand-sand text-center">Ingredient Analysis</h2>
+                     <div id="ingredients-summary" class="mt-4 text-center"></div>
+                     <div id="harmful-list" class="mt-4 space-y-3"></div>
+                     <div class="mt-6 text-center">
+                         <button onclick="resetDemo('ingredients')" class="bg-brand-sand/10 text-brand-sand font-bold py-2 px-6 rounded-full hover:bg-brand-sand/20 transition duration-300">
+                            Check Another Product
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <p class="absolute bottom-4 text-xs text-brand-text-light/50">AfriDam AI Hackathon MVP</p>
+    </div>
+
+    <script>
+        // --- DOM ELEMENT REFERENCES ---
+        const tabScanner = document.getElementById('tab-scanner');
+        const tabIngredients = document.getElementById('tab-ingredients');
+        const scannerContent = document.getElementById('scanner-content');
+        const ingredientsContent = document.getElementById('ingredients-content');
+
+        // Scanner elements
+        const uploadScreen = document.getElementById('upload-screen');
+        const analyzingScreen = document.getElementById('analyzing-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const imageUploadInput = document.getElementById('image-upload-input');
+        const uploadLabel = document.getElementById('upload-label');
+        const analyzeButton = document.getElementById('analyze-button');
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        const diagnosisCondition = document.getElementById('diagnosis-condition');
+        const diagnosisConfidence = document.getElementById('diagnosis-confidence');
+        const diagnosisDescription = document.getElementById('diagnosis-description');
+        
+        // Ingredient elements
+        const ingredientsInputScreen = document.getElementById('ingredients-input-screen');
+        const ingredientsResultsScreen = document.getElementById('ingredients-results-screen');
+        const ingredientsTextarea = document.getElementById('ingredients-textarea');
+        const checkIngredientsButton = document.getElementById('check-ingredients-button');
+        const ingredientsSummary = document.getElementById('ingredients-summary');
+        const harmfulList = document.getElementById('harmful-list');
+
+        let selectedFile = null;
+        // IMPORTANT: Replace with your actual AWS server URL when deployed.
+        const backendUrl = 'http://127.0.0.1:5000'; 
+
+        // --- TAB SWITCHING LOGIC ---
+        tabScanner.addEventListener('click', () => {
+            scannerContent.classList.remove('hidden');
+            ingredientsContent.classList.add('hidden');
+            tabScanner.classList.add('active');
+            tabIngredients.classList.remove('active');
+        });
+
+        tabIngredients.addEventListener('click', () => {
+            ingredientsContent.classList.remove('hidden');
+            scannerContent.classList.add('hidden');
+            tabIngredients.classList.add('active');
+            tabScanner.classList.remove('active');
+        });
+
+        // --- SKIN SCANNER LOGIC ---
+        imageUploadInput.addEventListener('change', (event) => {
+            if (event.target.files && event.target.files[0]) {
+                selectedFile = event.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    imagePreviewContainer.classList.remove('hidden');
+                };
+                reader.readAsDataURL(selectedFile);
+                uploadLabel.classList.add('hidden');
+                analyzeButton.classList.remove('hidden');
+            }
+        });
+
+        analyzeButton.addEventListener('click', () => {
+            if (!selectedFile) return;
+            uploadScreen.classList.add('hidden');
+            analyzingScreen.classList.remove('hidden');
+
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+
+            fetch(`${backendUrl}/analyze`, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        diagnosisCondition.textContent = data.diagnosis.primary_condition;
+                        diagnosisConfidence.textContent = Math.round(data.diagnosis.confidence_score * 100);
+                        diagnosisDescription.textContent = data.diagnosis.description;
+                        analyzingScreen.classList.add('hidden');
+                        resultsScreen.classList.remove('hidden');
+                    } else {
+                        alert('Error: ' + data.error);
+                        resetDemo('scanner');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Could not connect to the analysis server.');
+                    resetDemo('scanner');
+                });
+        });
+
+        // --- INGREDIENT CHECKER LOGIC ---
+        checkIngredientsButton.addEventListener('click', () => {
+            const ingredientsText = ingredientsTextarea.value;
+            if (!ingredientsText.trim()) {
+                alert('Please enter a list of ingredients.');
+                return;
+            }
+
+            const ingredientsList = ingredientsText.split(',').map(item => item.trim());
+            
+            ingredientsInputScreen.classList.add('hidden');
+            // We can show a loading spinner here in a real app
+            
+            fetch(`${backendUrl}/check-ingredients`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ingredients: ingredientsList })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    displayIngredientResults(data);
+                } else {
+                    alert('Error: ' + data.error);
+                    resetDemo('ingredients');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Could not connect to the analysis server.');
+                resetDemo('ingredients');
+            });
+        });
+
+        function displayIngredientResults(data) {
+            ingredientsSummary.innerHTML = `<p class="text-brand-text-light">Checked ${data.submitted_count} ingredients and found <span class="font-bold text-brand-terracotta">${data.harmful_found_count}</span> potential issues.</p>`;
+            harmfulList.innerHTML = ''; // Clear previous results
+
+            if (data.harmful_ingredients.length > 0) {
+                data.harmful_ingredients.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'bg-red-900/20 border border-red-500/30 p-4 rounded-lg';
+                    div.innerHTML = `
+                        <h4 class="font-bold text-red-400 capitalize">${item.name}</h4>
+                        <p class="text-sm text-brand-text-light">${item.reason}</p>
+                    `;
+                    harmfulList.appendChild(div);
+                });
+            } else {
+                 const div = document.createElement('div');
+                    div.className = 'bg-green-900/20 border border-green-500/30 p-4 rounded-lg';
+                    div.innerHTML = `<p class="font-bold text-green-400">No harmful ingredients from our database were found in your list.</p>`;
+                    harmfulList.appendChild(div);
+            }
+
+            ingredientsResultsScreen.classList.remove('hidden');
+        }
+
+
+        // --- GENERAL DEMO LOGIC ---
+        function resetDemo(demoType) {
+            if (demoType === 'scanner') {
+                resultsScreen.classList.add('hidden');
+                analyzingScreen.classList.add('hidden');
+                uploadScreen.classList.remove('hidden');
+                uploadLabel.classList.remove('hidden');
+                analyzeButton.classList.add('hidden');
+                imagePreviewContainer.classList.add('hidden');
+                imagePreview.src = '';
+                imageUploadInput.value = '';
+                selectedFile = null;
+            } else if (demoType === 'ingredients') {
+                ingredientsResultsScreen.classList.add('hidden');
+                ingredientsInputScreen.classList.remove('hidden');
+                ingredientsTextarea.value = '';
+            }
+        }
+    </script>
+
+</body>
+</html>
